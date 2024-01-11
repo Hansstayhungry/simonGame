@@ -12,7 +12,7 @@ const nextSequence = function () {
   gamePattern.push(randomChosenColour);
 
   // animation with audio played
-  $("#" + randomChosenColour).fadeIn(100).fadeOut(100).fadeIn(100);
+  $("#" + randomChosenColour).fadeOut(100).fadeIn(100);
   const audio = new Audio("sounds/" + randomChosenColour + ".mp3");
   audio.play();
 };
@@ -25,12 +25,20 @@ const userChosenColour = function () {
   });
 };
 
-// play sound effect 
+// user click button
 const playSound = function () {
-  // animation with audio played
+  // audio played
   $("div[type='button']").on("click", function () {
-    $("#" + $(this).attr("id")).fadeIn(100).fadeOut(100).fadeIn(100);
     const audio = new Audio("sounds/" + $(this).attr("id") + ".mp3");
     audio.play();
+    // animation effect
+    $(this).addClass("pressed");
+
+    // remove animation effect after 100ms
+    const currentButton = $(this);
+    setTimeout(function () {
+      $(currentButton).removeClass("pressed")
+    }, 100);
   });
 };
+
