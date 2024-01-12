@@ -4,8 +4,18 @@ const gamePattern = [];
 // storage the user clicks
 const userClickedPattern = [];
 
+// storage level;
+let level = 0;
+
+// game start handler
+let gameStart = false;
+
 // randomly output one of four colours
 const nextSequence = function () {
+  if (level > 0) {
+    $("h1").text("Level " + level);
+  };
+  
   const randomNumber = Math.floor(Math.random() * 4)
   const buttonColours = ["red", "blue", "green", "yellow"];
   let randomChosenColour = buttonColours[randomNumber];
@@ -42,3 +52,12 @@ const playSound = function () {
   });
 };
 
+// press any key to start the game
+const keyPressed = $(document).on("keypress", function(event) {
+  // call to start the game
+  if(event.which !== undefined) {
+    gameStart = true;
+    level = 1;
+    nextSequence();
+  }
+});
