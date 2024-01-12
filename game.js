@@ -4,14 +4,37 @@ const gamePattern = [];
 // storage the user clicks
 const userClickedPattern = [];
 
-// storage level;
+// storage level
 let level = 0;
 
-// game start handler
+// game start toggle
 let gameStart = false;
 
-// keypress handler;
+// keypress container
 let keypress = [];
+
+// game over toggle
+let gameOver = false;
+
+// game over handler
+const gameOverHandler = function () {
+
+  // play you got it wrong sound
+  const audioWrong = new Audio("sounds/wrong.mp3");
+  audioWrong.play();
+
+  $("h1").text("Game Over, Press Any Key to Restart");
+
+  // reset
+  gameStart = false;
+
+  gamePattern.length = 0;
+  userClickedPattern.length = 0;
+  level = 0;
+  keypress.length = 0;
+
+  gameOver = false;
+}
 
 // randomly output one of four colours
 const nextSequence = function () {
@@ -32,9 +55,23 @@ const nextSequence = function () {
   }
 
   // add delay start
-  setTimeout(randomColourHandler, 1000);
+  setTimeout(randomColourHandler, 200);
 
+  if (gameOver === true) {
+    gameOverHandler()
+  }
 };
+
+// press any key to start the game
+const keyPressed = $(document).on("keypress", function(event) {
+  // call to start the game
+    keypress.push(event.which);
+
+    gameStart = true;
+    level = 1;
+
+    nextSequence();
+});
 
 // handler of user chosen colour
 const userChosenColour = function () {
@@ -61,17 +98,14 @@ const playSound = function () {
   });
 };
 
-// press any key to start the game
-const keyPressed = $(document).on("keypress", function(event) {
-  // call to start the game
-  if(event.which !== undefined) {
-    keypress.push(event.which);
+// check answer
+const checkAnswer = function () {
 
-    gameStart = true;
-    level = 1;
+  if (level !== 0) {
+    for (let i = 0; i < userClickedPattern.length; i++) {
+      if (userClickedPattern[i] !== gamePattern[i]) {
+        gameOver = true;
+      }
+    }
   }
-
-  if (keypress.length === 1) {
-    nextSequence();
 }
-});
