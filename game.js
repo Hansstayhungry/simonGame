@@ -10,6 +10,9 @@ let level = 0;
 // game start handler
 let gameStart = false;
 
+// keypress handler;
+let keypress = [];
+
 // randomly output one of four colours
 const nextSequence = function () {
   if (level > 0) {
@@ -22,9 +25,15 @@ const nextSequence = function () {
   gamePattern.push(randomChosenColour);
 
   // animation with audio played
-  $("#" + randomChosenColour).fadeOut(100).fadeIn(100);
-  const audio = new Audio("sounds/" + randomChosenColour + ".mp3");
-  audio.play();
+  const randomColourHandler = function () {
+    $("#" + randomChosenColour).fadeOut(100).fadeIn(100);
+    const audio = new Audio("sounds/" + randomChosenColour + ".mp3");
+    audio.play();
+  }
+
+  // add delay start
+  setTimeout(randomColourHandler, 1000);
+
 };
 
 // handler of user chosen colour
@@ -56,8 +65,13 @@ const playSound = function () {
 const keyPressed = $(document).on("keypress", function(event) {
   // call to start the game
   if(event.which !== undefined) {
+    keypress.push(event.which);
+
     gameStart = true;
     level = 1;
-    nextSequence();
   }
+
+  if (keypress.length === 1) {
+    nextSequence();
+}
 });
