@@ -10,8 +10,8 @@ let level = 0;
 // game start toggle
 let gameStart = false;
 
-// keypress container
-let keypress = [];
+// // keypress container
+// let keypress = [];
 
 // game over toggle
 let gameOver = false;
@@ -31,27 +31,70 @@ const gameOverHandler = function () {
   gamePattern.length = 0;
   userClickedPattern.length = 0;
   level = 0;
-  keypress.length = 0;
+  // keypress.length = 0;
 
   gameOver = false;
 }
 
+// press any key to start the game
+$(document).on("keypress", function(event) {
+  // call to start the game
+    // keypress.push(event.which);
+
+    gameStart = true;
+    level = 1;
+
+    $("h1").text("Level " + level);
+
+    nextSequence();
+});
+
+// handler of user chosen colour
+$(".btn").on("click", function () {
+  let clickedButton = $(this).attr("id");
+  userClickedPattern.push(clickedButton);
+
+  playSound();
+
+  checkAnswer(userClickedPattern.length -1);
+});
+// // press any key to start the game
+// const keyPressed = $(document).on("keypress", function(event) {
+//   // call to start the game
+//     keypress.push(event.which);
+
+//     gameStart = true;
+//     level = 1;
+
+//     nextSequence();
+// });
+
+// check answer
+const checkAnswer = function (currentLevel) {
+  if (gamePattern[currentLevel] !== userClickedPattern[currentLevel]) {
+    if (userClickedPattern.length !== gamePattern.length){
+      gameOver = true;
+      gameOverHandler();
+    } else {
+      level++;
+      
+      setTimeout(nextSequence ,1000);
+    }
+  }
+}
+
 // randomly output one of four colours
 const nextSequence = function () {
-  userChosenColour();
-  if (gameOver === true) {
-    gameOverHandler()
-    return;
-  }
-
-  if (level > 0) {
-    $("h1").text("Level " + level);
-  };
+  // if (gameOver === true) {
+  //   gameOverHandler()
+  //   return;
+  // }
+  level++;
   
   const randomNumber = Math.floor(Math.random() * 4)
   const buttonColours = ["red", "blue", "green", "yellow"];
   let randomChosenColour = buttonColours[randomNumber];
-  gamePattern[0] = randomChosenColour;
+  gamePattern.push(randomChosenColour);
 
   // animation with audio played
   const randomColourHandler = function () {
@@ -63,48 +106,23 @@ const nextSequence = function () {
   randomColourHandler();
 };
 
-// press any key to start the game
-const keyPressed = $(document).on("keypress", function(event) {
-  // call to start the game
-    keypress.push(event.which);
+// // handler of user chosen colour
+// const userChosenColour = function () {
+//   $("div[type='button']").on("click", function () {
+//     let clickedButton = $(this).attr("id");
+//     userClickedPattern.push(clickedButton);
 
-    gameStart = true;
-    level = 1;
+//     playSound();
 
-    nextSequence();
-});
-
-// check answer
-const checkAnswer = function () {
+//     checkAnswer();
+//   });
   
-  if (level !== 0 && userClickedPattern[0] !== gamePattern[0]) {
-    gameOver = true;
-    gameOverHandler();
-    return;
-  } else {
-    level++;
-    
-    setTimeout(nextSequence, 1000);
-  }
-}
-
-// handler of user chosen colour
-const userChosenColour = function () {
-  $("div[type='button']").on("click", function () {
-    let clickedButton = $(this).attr("id");
-    userClickedPattern[0] = clickedButton;
-
-    playSound();
-
-    checkAnswer();
-  });
-  
-};
+// };
 
 // user click button
 const playSound = function () {
   // audio played
-  $("div[type='button']").on("click", function () {
+  $("btn").on("click", function () {
     const audio = new Audio("sounds/" + $(this).attr("id") + ".mp3");
     audio.play();
     // animation effect
