@@ -42,7 +42,6 @@ const gameOverHandler = function () {
 // press any key to start the game
 $(document).on("keypress", function(event) {
   // call to start the game
-    // keypress.push(event.which);
   if (!gameStart) {
     gameStart = true;
 
@@ -61,17 +60,6 @@ $(".btn").on("click", function () {
   checkAnswer(userClickedPattern.length -1);
 });
 
-// // press any key to start the game
-// const keyPressed = $(document).on("keypress", function(event) {
-//   // call to start the game
-//     keypress.push(event.which);
-
-//     gameStart = true;
-//     level = 1;
-
-//     nextSequence();
-// });
-
 // check answer
 const checkAnswer = function (currentLevel) {
   if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
@@ -86,10 +74,6 @@ const checkAnswer = function (currentLevel) {
 
 // randomly output one of four colours
 const nextSequence = function () {
-  // if (gameOver === true) {
-  //   gameOverHandler()
-  //   return;
-  // }
   level++;
   userClickedPattern = [];
 
@@ -110,23 +94,9 @@ const nextSequence = function () {
   randomColourHandler();
 };
 
-// // handler of user chosen colour
-// const userChosenColour = function () {
-//   $("div[type='button']").on("click", function () {
-//     let clickedButton = $(this).attr("id");
-//     userClickedPattern.push(clickedButton);
-
-//     playSound();
-
-//     checkAnswer();
-//   });
-  
-// };
-
 // user click button
 const playSound = function (buttonId) {
   // audio played
-  // $(".btn").on("click", function () {
     const audio = new Audio("sounds/" + buttonId + ".mp3");
     audio.play();
     // animation effect
