@@ -1,8 +1,8 @@
 // record game sequence pattern container
-const gamePattern = [];
+let gamePattern = [];
 
 // storage the user clicks
-const userClickedPattern = [];
+let userClickedPattern = [];
 
 // storage level
 let level = 0;
@@ -23,13 +23,16 @@ const gameOverHandler = function () {
   const audioWrong = new Audio("sounds/wrong.mp3");
   audioWrong.play();
 
+  $("body").addClass("game-over");
   $("h1").text("Game Over, Press Any Key to Restart");
+  setTimeout(function() {
+    $("body").removeClass("game-over");
+  }, 500);
 
   // reset
   gameStart = false;
 
-  gamePattern.length = 0;
-  userClickedPattern.length = 0;
+  gamePattern = [];
   level = 0;
   // keypress.length = 0;
 
@@ -40,13 +43,12 @@ const gameOverHandler = function () {
 $(document).on("keypress", function(event) {
   // call to start the game
     // keypress.push(event.which);
-
+  if (!gameStart) {
     gameStart = true;
-    level = 1;
-
-    $("h1").text("Level " + level);
 
     nextSequence();
+  }
+
 });
 
 // handler of user chosen colour
@@ -54,10 +56,11 @@ $(".btn").on("click", function () {
   let clickedButton = $(this).attr("id");
   userClickedPattern.push(clickedButton);
 
-  playSound();
+  playSound(clickedButton);
 
   checkAnswer(userClickedPattern.length -1);
 });
+
 // // press any key to start the game
 // const keyPressed = $(document).on("keypress", function(event) {
 //   // call to start the game
@@ -71,17 +74,15 @@ $(".btn").on("click", function () {
 
 // check answer
 const checkAnswer = function (currentLevel) {
-  if (gamePattern[currentLevel] !== userClickedPattern[currentLevel]) {
-    if (userClickedPattern.length !== gamePattern.length){
+  if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
+    if (gamePattern.length === userClickedPattern.length) {
+      setTimeout(nextSequence, 1000);
+    } 
+  } else {
       gameOver = true;
       gameOverHandler();
-    } else {
-      level++;
-      
-      setTimeout(nextSequence ,1000);
-    }
-  }
-}
+  };
+};
 
 // randomly output one of four colours
 const nextSequence = function () {
@@ -90,7 +91,10 @@ const nextSequence = function () {
   //   return;
   // }
   level++;
-  
+  userClickedPattern = [];
+
+  $("h1").text("Level " + level);
+
   const randomNumber = Math.floor(Math.random() * 4)
   const buttonColours = ["red", "blue", "green", "yellow"];
   let randomChosenColour = buttonColours[randomNumber];
@@ -120,18 +124,17 @@ const nextSequence = function () {
 // };
 
 // user click button
-const playSound = function () {
+const playSound = function (buttonId) {
   // audio played
-  $("btn").on("click", function () {
-    const audio = new Audio("sounds/" + $(this).attr("id") + ".mp3");
+  // $(".btn").on("click", function () {
+    const audio = new Audio("sounds/" + buttonId + ".mp3");
     audio.play();
     // animation effect
-    $(this).addClass("pressed");
+    $("#" + buttonId).addClass("pressed");
 
     // remove animation effect after 100ms
-    const currentButton = $(this);
     setTimeout(function () {
-      $(currentButton).removeClass("pressed")
+      $("#" + buttonId).removeClass("pressed")
     }, 100);
-  });
+  // });
 };
